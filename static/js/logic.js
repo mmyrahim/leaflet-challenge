@@ -11,9 +11,14 @@ var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
     accessToken: API_KEY
 });
 
-// create the map
+// creating the map
 var myMap = L.map("map", {
     center: [37.77, -122.42],
     zoom: 5,
     layers: [streetmap]
+});
+
+// fetch earthquake data from API and add basic markers
+d3.json(queryUrl).then(function(data) {
+    L.geoJSON(data).addTo(myMap);
 });

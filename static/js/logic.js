@@ -6,6 +6,16 @@ function markerSize(magnitude) {
     return magnitude * 5;
 }
 
+// determine marker color based on depth
+function depthColor(depth) {
+    if (depth < 10) return "#98ee00";
+    if (depth < 30) return "#d4ee00";
+    if (depth < 50) return "#eecc00";
+    if (depth < 70) return "#ee9c00";
+    if (depth < 90) return "#ea822c";
+    return "#ea2c2c";
+}
+
 // set up the base streetmap layer
 var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
@@ -23,16 +33,24 @@ var myMap = L.map("map", {
     layers: [streetmap]
 });
 
-// fetch earthquake data, set marker size, and add basic popups
+// fetch earthquake data, set marker size and color, and add detailed popups
 d3.json(queryUrl).then(function(data) {
     L.geoJSON(data, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
-                radius: markerSize(feature.properties.mag)
+                radius: markerSize(feature.properties.mag),
+                fillColor: depthColor(feature.geometry.coordinates[2]),
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
             });
         },
         onEachFeature: function(feature, layer) {
-            layer.bindPopup("<h3>" + feature.properties.place + "</h3>");
+            layer.bindPopup("<h3>" + feature.properties.place +
+            "</h3><p>Magnitude: " + feature.properties.mag + 
+            "<br>Depth: " + feature.geometry.coordinates[2] + "</p>");
         }
     }).addTo(myMap);
 });
+

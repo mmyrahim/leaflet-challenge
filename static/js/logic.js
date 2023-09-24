@@ -57,13 +57,13 @@ d3.json(queryUrl).then(function(data) {
     var legend = L.control({position: 'bottomright'});
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend'),
-            grades = [-10, 10, 30, 50, 70, 90]
+            grades = [-10, 10, 30, 50, 70, 90];
 
         // create labels with colored squares for each depth interval
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
-                '< style="background:' + depthColor(grades[i] + 1) + '; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> ' +
-                grades[i] + (grades[i + 1]  '&n dash;' + grades[i + 1] + '<br>' : '+') + '<br>';
+                '<i style="background:' + depthColor(grades[i] + 1) + '; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+') + '<br>';
         }
 
         return div;
@@ -71,4 +71,4 @@ d3.json(queryUrl).then(function(data) {
     
     // attach the legend to the map
     legend.addTo(myMap);
-};
+});
